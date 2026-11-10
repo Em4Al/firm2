@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# ПРИМЕР проектного quality-gate на завершении роли-агента. Кладётся как
+# .firm/hooks/subagent-stop.sh (chmod +x). Верни != 0, чтобы заблокировать переход.
+#
+# ВНИМАНИЕ: в firm2 события переходов пишет ОТДЕЛЬНЫЙ хук движка (hooks/stage-event.sh).
+# Этот файл — только про быстрый smoke под стек проекта; журнал событий он не ведёт
+# и знать о нём не должен.
+set -euo pipefail
+
+# pytest -q -x --timeout=60 tests/smoke || exit 1
+
+echo "[project subagent-stop] заглушка — впиши быстрый smoke под свой стек" >&2
+exit 0

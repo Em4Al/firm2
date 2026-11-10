@@ -1,0 +1,22 @@
+{
+  "name": "firm2-marketplace",
+  "private": true,
+  "//type": "Поля type здесь нет намеренно. \"type\": \"module\" заставляет node читать как ESM любой .js в дереве — включая workflows/firm2-build.js, который модулем не является (рантайм оборачивает его тело в функцию, поэтому там законен return на верхнем уровне). С этим полем node --check валит workflow на ровном месте; поймано рубежом 01.10.2026. Конфиг линтера лежит в .mjs и в поле не нуждается.",
+  "description": "Локальный маркетплейс плагинов Claude Code. Зависимость одна и только для проверок движка — к доставке плагина node_modules отношения не имеет: в кэш копируются commands/ agents/ hooks.json workflows/, а scripts/ читается по engine_root.",
+  "scripts": {
+    "lint": "eslint firm2 tools --no-error-on-unmatched-pattern",
+    "//test": "Каталог позиционным аргументом НЕ годится: с Node 23 он трактуется как glob, и `node --test firm2/tests/` падает с Cannot find module. Поэтому звёздочка.",
+    "test": "node --test firm2/tests/*.test.mjs",
+    "preflight": "node firm2/scripts/preflight.mjs",
+    "//roles": "Снимок таблицы ролей: кто зовёт роль, какую схему ей передают, что она объявила выходом. Код возврата всегда 0 — расхождения судит рубеж, шаг 3у; из --json собирается схема «вход-выход восьми ролей».",
+    "roles": "node firm2/scripts/roles.mjs",
+    "//release": "Доставка целиком: рубеж, версия, запись в CHANGELOG, коммит, push, кэш плагина. Аргументы через npm идут после --, поэтому в документации зовётся напрямую: node firm2/scripts/release.mjs --notes <файл> --message <файл>.",
+    "release": "node firm2/scripts/release.mjs",
+    "graph": "codegraph build ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "globals": "^17.13.0"
+  }
+}

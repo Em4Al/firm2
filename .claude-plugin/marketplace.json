@@ -1,0 +1,13 @@
+{
+  "name": "firm2",
+  "owner": {
+    "name": "Alexander"
+  },
+  "plugins": [
+    {
+      "name": "firm2",
+      "source": "./firm2",
+      "description": "Фирма-команда агентов-разработчиков: восемь ролей, девять приёмов, настройка /firm-setup и три сессии маршрута /firm-discovery → /firm-plan → /firm-build, двое ворот, параллельная сборка в worktree, детерминированный журнал переходов и дашборд."
+    }
+  ]
+}

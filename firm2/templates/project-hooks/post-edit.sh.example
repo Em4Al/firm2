@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# ПРИМЕР проектного quality-gate. Кладётся в целевой репозиторий как
+# .firm/hooks/post-edit.sh (chmod +x). Движок вызывает его после Write/Edit и
+# передаёт JSON хука на stdin.
+#
+# Два урока прошлых прогонов, оба стоили времени:
+#   1. линтуй ТОЛЬКО изменённый файл. `ruff check .` во время автономной сборки
+#      блокирует агентов из-за незавершённого файла соседнего шага;
+#   2. во время сборки проверка СОВЕТУЮЩАЯ (exit 0). Строгий линт — на финальном
+#      шаге DevOps и в CI, где он никого не держит за руку.
+#
+# Для firm2 добавлен третий: правки идут в РАЗНЫХ worktree одновременно, поэтому
+# ничего, что смотрит на репозиторий целиком, здесь запускать нельзя.
+set -euo pipefail
+
+payload="$(cat)"
+f="$(printf '%s' "$payload" | jq -r '.tool_input.file_path // .tool_response.filePath // empty' 2>/dev/null || true)"
+[[ -z "$f" || ! -f "$f" ]] && exit 0
+
+case "$f" in
+  *.py)
+    ruff check "$f" || echo "[post-edit] ruff замечания в $f (advisory)" >&2
+    ;;
+  *.ts|*.tsx|*.js|*.jsx)
+    # npx --no-install eslint "$f" || echo "[post-edit] eslint $f (advisory)" >&2
+    ;;
+esac
+exit 0
